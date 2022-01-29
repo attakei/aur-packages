@@ -1,0 +1,19 @@
+name: Update version of firebase-tools
+
+on:
+  workflow_dispatch:
+
+jobs:
+  update-revealjs:
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:base-devel
+    steps:
+      - uses: actions/checkout@v2
+      - name: Try update resources
+        run: |
+          version=`curl https://api.github.com/repos/firebase/firebase-tools/releases|jq '.[0].name[1:]'`
+          sed -i -e "s/pkgver=.*/pkgver=${version}/g" PKGBUILD
+          updpkgsums
+          makepkg --printsrcinfo > .SRCINFO
+          git status
