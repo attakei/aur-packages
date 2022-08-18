@@ -11,17 +11,31 @@ jobs:
         run: |
           version=`curl https://api.github.com/repos/firebase/firebase-tools/releases|jq '.[0].name[1:]'`
           echo "::set-output name=latest_version::${version}"
+    outputs:
+      latest_version: ${{ steps.check_latest.outputs.latest_version }}
   update-deps:
     needs: fetch-latest-version
     runs-on: ubuntu-latest
-    container:
-      image: archlinux:base-devel
     steps:
       - uses: actions/checkout@v3
       - run: |
-          sudo pacman -Sy --noconfirm pacman-contrib
-          sed -i -e "s/pkgver=.*/pkgver=${{ steps.check_latest.outputs.latest_version }}/g" PKGBUILD
-          makepkg --skipchecksums
-          updpkgsums
-          makepkg --printsrcinfo > .SRCINFO
+          mkdir ~/.ssh
+          echo "${{ secrets.AUR_USER_KEY }}" > ~/.ssh/aur_key
+          chmod 400 ~/.ssh/aur_key
+          echo "Host aur.archlinux.org" >> ~/.ssh/config
+          echo "  StrictHostKeyChecking=no" >> ~/.ssh/config
+          echo "  IdentityFile ~/.ssh/aur_key" >> ~/.ssh/config
+          git clone ssh://aur@aur.archlinux.org/firebase-tools-bin.git
+      - run: pipx install pipenv
+      - uses: actions/setup-python@v3
+        with:
+          architecture: x64
+          python-version: '3.10'
+          cache: pipenv
+      - name: Check updates
+        run: |
+          pipenv install
+          pipenv run python generate.py ${{ needs.fetch-latest-version.outputs.latest_version }} firebase-tools-bin
+          cd firebase-tools-bin
           git status
+          git diff
