@@ -7,7 +7,6 @@ jobs:
   fetch-latest-version:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
       - id: check_latest
         run: |
           version=`curl https://api.github.com/repos/firebase/firebase-tools/releases|jq '.[0].name[1:]'`
@@ -18,10 +17,11 @@ jobs:
     container:
       image: archlinux:base-devel
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: |
           sudo pacman -Sy --noconfirm pacman-contrib
           sed -i -e "s/pkgver=.*/pkgver=${{ steps.check_latest.outputs.latest_version }}/g" PKGBUILD
+          makepkg --skipchecksums
           updpkgsums
           makepkg --printsrcinfo > .SRCINFO
           git status
