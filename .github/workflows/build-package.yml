@@ -1,0 +1,43 @@
+name: Update AUR packages
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'package.ini'
+  workflow_dispatch:
+
+jobs:
+  update-packages:
+    needs: fetch-latest-version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          mkdir ~/.ssh
+          echo "${{ secrets.AUR_SSH_KEY }}" > ~/.ssh/aur_key
+          chmod 400 ~/.ssh/aur_key
+          echo "Host aur.archlinux.org" >> ~/.ssh/config
+          echo "  StrictHostKeyChecking=no" >> ~/.ssh/config
+          echo "  IdentityFile ~/.ssh/aur_key" >> ~/.ssh/config
+          git clone ssh://aur@aur.archlinux.org/firebase-tools-bin.git
+      - run: pipx install pipenv
+      - uses: actions/setup-python@v4
+        with:
+          architecture: x64
+          python-version: '3.10'
+          cache: pipenv
+      - name: Check updates
+        run: |
+          pipenv install
+          pipenv run tools/generate-resources.py firebase-tools-bin
+          cd firebase-tools-bin
+          changed=`git status -s | wc -l`
+          if [ $changed != "0" ] ; then
+            git config user.name "${{ secrets.AUR_GIT_NAME }}"
+            git config user.email "${{ secrets.AUR_GIT_EMAIL }}"
+            git add .
+            git commit -m "Update version"
+            git push
+          fi
