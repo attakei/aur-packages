@@ -1,0 +1,29 @@
+# Maintainer: Kazuya Takei <myself@attakei.net>
+
+pkgname=firebase-tools-bin
+pkgver={{ version_text }}
+pkgrel=1
+pkgdesc=" The Firebase Command Line Tools (bundled official standalone binary)"
+arch=('x86_64')
+url="https://github.com/firebase/firebase-tools"
+license=('MIT')
+conflicts=('firebase-tools')
+options=('!strip')
+source=(
+    {% for s in sources -%}
+    "{{ s.url }}"
+    {% endfor -%}
+)
+md5sums=(
+    {% for s in sources -%}
+    '{{ s.checksum }}'
+    {% endfor -%}
+)
+
+package() {
+    name=${pkgname/-bin/}-linux
+    chmod +x ${srcdir}/${name}
+    install -Dm644 "${srcdir}/LICENSE" "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+    install -Dm755 "${srcdir}/${name}" "${pkgdir}/usr/bin/firebase"
+}
+
