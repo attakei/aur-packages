@@ -51,7 +51,7 @@ jobs:
           architecture: x64
           python-version: '3.10'
           cache: pipenv
-      - name: Check updates
+      - name: Push resources of package to AUR
         run: |
           pipenv install
           pipenv run tools/generate-resources.py packages/${{ matrix.package }} repos/${{ matrix.package }}
