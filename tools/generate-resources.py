@@ -52,7 +52,6 @@ def main(args: Arguments) -> int:
     for name, url in cfg.items("sources"):
         src = Source.load(url.format(**ctx))
         ctx["sources"].append(src)
-    print(ctx)
     for template in (args.root / "templates").glob("*.j2"):
         t = jinja2.Template(template.read_text())
         dist = args.dist / template.stem
