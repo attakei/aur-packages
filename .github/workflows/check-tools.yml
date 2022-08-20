@@ -1,8 +1,12 @@
-name: Check tools
+name: Check tools for management
 
 on:
   push:
+    paths:
+      - 'tools/**/*.py'
   pull_request:
+    paths:
+      - 'tools/**/*.py'
   workflow_dispatch:
 
 jobs:
