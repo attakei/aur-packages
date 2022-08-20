@@ -1,8 +1,5 @@
-# firebase-tools-bin for AUR
+# attakei's AUR packages
 
 ## Overview
 
-AUR resources to use Firebase CLI as standalone binary
-
-Please see about [standalone binary](https://firebase.google.com/docs/cli#mac-linux-standalone-binary).
-
+This is collection of packages in AUR that is mantained by @attakei.

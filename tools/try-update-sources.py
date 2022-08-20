@@ -1,5 +1,8 @@
 #!/usr/bin/env python
-"""Fetch version string from latest release
+"""Proc to update source version of package.
+
+- Fetch version string from latest release
+- Update package.ini
 """
 import argparse
 import configparser
@@ -17,16 +20,18 @@ def fetch_latest_version(path: str) -> str:
 
 
 class Arguments:
-    config: str
-    context: Path
+    target: Path
 
     def resolve(self):
-        self.context = (Path.cwd() / self.context).resolve()
-        self.config = (self.context / self.config).resolve()
-        if not self.config.exists():
-            raise ValueError("--config is not exists")
-        if not self.config.is_file():
-            raise ValueError("--config is not file")
+        self.target = (Path.cwd() / self.target).resolve()
+        if self.config.exists() and self.config.is_file():
+            pass
+        else:
+            raise ValueError("Invalid target")
+
+    @property
+    def config(self) -> Path:
+        return self.target / "package.ini"
 
 
 def main(args: Arguments) -> int:
@@ -36,13 +41,16 @@ def main(args: Arguments) -> int:
     current = cfg.get("main", "version")
     print(f"::set-output name=latest::{latest}")
     print(f"::set-output name=current::{current}")
+    if current != latest:
+        cfg["main"]["version"] = latest
+        with args.config.open("w") as fp:
+            cfg.write(fp)
     return 0
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config", default="package.ini")
-    parser.add_argument("context", nargs="?", default=".")
+    parser.add_argument("target")
 
     try:
         args = parser.parse_args(namespace=Arguments())

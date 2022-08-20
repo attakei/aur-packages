@@ -5,11 +5,34 @@ on:
     branches:
       - main
     paths:
-      - 'package.ini'
+      - 'packages/**'
   workflow_dispatch:
 
 jobs:
-  update-packages:
+  collect-packages:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - run: pipx install pipenv
+      - uses: actions/setup-python@v4
+        with:
+          architecture: x64
+          python-version: '3.10'
+          cache: pipenv
+      - run: pipenv install
+      - name: Collect packages from target folders
+        id: collect
+        run: |
+          pipenv run ./tools/collect-packages.py ./packages
+    outputs:
+      packages: ${{ steps.collect.outputs.packages }}
+  update-package:
+    needs:
+      - collect-packages
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{ fromJson(needs.collect-packages.outputs.packages) }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -20,7 +43,8 @@ jobs:
           echo "Host aur.archlinux.org" >> ~/.ssh/config
           echo "  StrictHostKeyChecking=no" >> ~/.ssh/config
           echo "  IdentityFile ~/.ssh/aur_key" >> ~/.ssh/config
-          git clone ssh://aur@aur.archlinux.org/firebase-tools-bin.git
+          mkdir repos
+          git clone ssh://aur@aur.archlinux.org/${{ matrix.package }}.git repos/${{ matrix.package }}
       - run: pipx install pipenv
       - uses: actions/setup-python@v4
         with:
@@ -30,8 +54,8 @@ jobs:
       - name: Check updates
         run: |
           pipenv install
-          pipenv run tools/generate-resources.py firebase-tools-bin
-          cd firebase-tools-bin
+          pipenv run tools/generate-resources.py packages/${{ matrix.package }} repos/${{ matrix.package }}
+          cd repos/${{ matrix.package }}
           changed=`git status -s | wc -l`
           if [ $changed = "0" ] ; then
             echo "It does not have any changes. Finished."

@@ -19,10 +19,14 @@ class Arguments:
     def resolve(self):
         self.root = (Path.cwd() / self.root).resolve()
         if not self.root.exists():
-            raise ValueError("--root is not exists")
+            raise ValueError("ROOT is not exists")
         if not self.root.is_dir():
-            raise ValueError("--root is not directory")
+            raise ValueError("ROOT is not directory")
         self.dist = (Path.cwd() / self.dist).resolve()
+        if not self.root.exists():
+            raise ValueError("DIST is not exists")
+        if not self.root.is_dir():
+            raise ValueError("DIST is not directory")
 
 
 @dataclass
@@ -58,7 +62,7 @@ def main(args: Arguments) -> int:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--root", default=".")
+    parser.add_argument("root")
     parser.add_argument("dist")
 
     try:
