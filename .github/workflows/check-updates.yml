@@ -1,4 +1,4 @@
-name: Check updates of dependencies
+name: Check resource updates of packages
 
 on:
   workflow_dispatch:
