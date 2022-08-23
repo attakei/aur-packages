@@ -51,10 +51,13 @@ jobs:
           architecture: x64
           python-version: '3.10'
           cache: pipenv
-      - name: Push resources of package to AUR
+      - name: Generate package resources
+        id: generate
         run: |
           pipenv install
           pipenv run tools/generate-resources.py packages/${{ matrix.package }} repos/${{ matrix.package }}
+      - name: Push to AUR
+        run: |
           cd repos/${{ matrix.package }}
           changed=`git status -s | wc -l`
           if [ $changed = "0" ] ; then
@@ -64,5 +67,5 @@ jobs:
           git config user.name "${{ secrets.AUR_GIT_NAME }}"
           git config user.email "${{ secrets.AUR_GIT_EMAIL }}"
           git add .
-          git commit -m "Update version"
+          git commit -m "Update version to ${{ steps.generate.version }}"
           git push

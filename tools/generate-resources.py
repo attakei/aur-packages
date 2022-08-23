@@ -48,6 +48,7 @@ def main(args: Arguments) -> int:
         "version": cfg.get("main", "version"),
         "sources": [],
     }
+    print(f"::set-output name=version::{ctx['version']}")
     ctx["version_text"] = ctx["version"][1:]
     for name, url in cfg.items("sources"):
         src = Source.load(url.format(**ctx))
