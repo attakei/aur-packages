@@ -67,5 +67,5 @@ jobs:
           git config user.name "${{ secrets.AUR_GIT_NAME }}"
           git config user.email "${{ secrets.AUR_GIT_EMAIL }}"
           git add .
-          git commit -m "Update version to ${{ steps.generate.version }}"
+          git commit -m "Update version to ${{ steps.generate.outputs.version }}"
           git push
