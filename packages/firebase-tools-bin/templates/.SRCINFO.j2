@@ -8,7 +8,7 @@ pkgbase = firebase-tools-bin
 	conflicts = firebase-tools
 	options = !strip
 	{%- for s in sources %}
-	source = {{ s.url }}
+	source = {{ s.name }}-{{ version_text }}::{{ s.url }}
 	{%- endfor %}
 	{% for s in sources -%}
 	md5sums = {{ s.checksum }}

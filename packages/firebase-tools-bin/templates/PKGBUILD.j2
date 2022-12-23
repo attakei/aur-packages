@@ -11,7 +11,7 @@ conflicts=('firebase-tools')
 options=('!strip')
 source=(
     {% for s in sources -%}
-    "{{ s.url }}"
+    "{{ s.name }}-{{ version_text }}::{{ s.url }}"
     {% endfor -%}
 )
 md5sums=(
@@ -21,9 +21,8 @@ md5sums=(
 )
 
 package() {
-    name=${pkgname/-bin/}-linux
-    chmod +x ${srcdir}/${name}
-    install -Dm644 "${srcdir}/LICENSE" "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
-    install -Dm755 "${srcdir}/${name}" "${pkgdir}/usr/bin/firebase"
+    chmod +x ${srcdir}/firebase-{{ version_text }}
+    install -Dm644 "${srcdir}/LICENSE-{{ version_text }}" "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+    install -Dm755 "${srcdir}/firebase-{{ version_text }}" "${pkgdir}/usr/bin/firebase"
 }
 
