@@ -1,0 +1,11 @@
+[main]
+repo = "firebase/firebase-tools"
+version = "v11.19.0"
+
+[[sources]]
+name = "firebase"
+url = "https://github.com/firebase/firebase-tools/releases/download/{version}/firebase-tools-linux"
+
+[[sources]]
+name = "license"
+url = "https://github.com/firebase/firebase-tools/raw/{version}/LICENSE"
