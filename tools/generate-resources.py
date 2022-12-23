@@ -2,7 +2,6 @@
 """Generate resources of package in AUR.
 """
 import argparse
-import configparser
 import hashlib
 import sys
 from dataclasses import dataclass
@@ -10,6 +9,7 @@ from pathlib import Path
 
 import httpx
 import jinja2
+import tomli
 
 
 class Arguments:
@@ -31,27 +31,27 @@ class Arguments:
 
 @dataclass
 class Source:
+    name: str
     url: str
     checksum: str
 
     @classmethod
-    def load(cls, url: str) -> "Source":
+    def load(cls, name: str, url: str) -> "Source":
         resp = httpx.get(url, follow_redirects=True)
         checksum = hashlib.md5(resp.content).hexdigest()
-        return cls(url=url, checksum=checksum)
+        return cls(name=name, url=url, checksum=checksum)
 
 
 def main(args: Arguments) -> int:
-    cfg = configparser.ConfigParser()
-    cfg.read(args.root / "package.ini")
+    cfg = tomli.loads((args.root / "package.toml").read_text())
     ctx = {
-        "version": cfg.get("main", "version"),
+        "version": cfg["main"]["version"],
         "sources": [],
     }
     print(f"::set-output name=version::{ctx['version']}")
     ctx["version_text"] = ctx["version"][1:]
-    for name, url in cfg.items("sources"):
-        src = Source.load(url.format(**ctx))
+    for source in cfg["sources"]:
+        src = Source.load(source["name"], source["url"].format(**ctx))
         ctx["sources"].append(src)
     for template in (args.root / "templates").glob("*.j2"):
         t = jinja2.Template(template.read_text())

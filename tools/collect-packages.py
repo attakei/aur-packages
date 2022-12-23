@@ -20,7 +20,7 @@ def main(args: Arguments) -> int:
     packages = [
         p.name
         for p in args.root.glob("*")
-        if p.is_dir() and (p / "package.ini").exists()
+        if p.is_dir() and (p / "package.toml").exists()
     ]
     output = json.dumps(packages)
     print(f"::set-output name=packages::{output}")

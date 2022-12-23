@@ -5,10 +5,11 @@
 - Update package.ini
 """
 import argparse
-import configparser
 import sys
 from pathlib import Path
 
+import tomli
+import tomli_w
 from github import Github
 
 
@@ -31,20 +32,18 @@ class Arguments:
 
     @property
     def config(self) -> Path:
-        return self.target / "package.ini"
+        return self.target / "package.toml"
 
 
 def main(args: Arguments) -> int:
-    cfg = configparser.ConfigParser()
-    cfg.read(args.config)
-    latest = fetch_latest_version(cfg.get("main", "repo"))
-    current = cfg.get("main", "version")
+    cfg = tomli.loads(args.config.read_text())
+    latest = fetch_latest_version(cfg["main"]["repo"])
+    current = cfg["main"]["version"]
     print(f"::set-output name=latest::{latest}")
     print(f"::set-output name=current::{current}")
     if current != latest:
         cfg["main"]["version"] = latest
-        with args.config.open("w") as fp:
-            cfg.write(fp)
+        args.config.write_text(tomli_w.dumps(cfg))
     return 0
 
 
