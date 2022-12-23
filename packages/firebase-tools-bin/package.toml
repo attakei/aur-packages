@@ -7,5 +7,5 @@ name = "firebase"
 url = "https://github.com/firebase/firebase-tools/releases/download/{version}/firebase-tools-linux"
 
 [[sources]]
-name = "license"
+name = "LICENSE"
 url = "https://github.com/firebase/firebase-tools/raw/{version}/LICENSE"
