@@ -3,7 +3,7 @@ repo = "firebase/firebase-tools"
 version = "v11.19.0"
 
 [[sources]]
-name = "firebase"
+name = "firebase-tools-linux"
 url = "https://github.com/firebase/firebase-tools/releases/download/{version}/firebase-tools-linux"
 
 [[sources]]
