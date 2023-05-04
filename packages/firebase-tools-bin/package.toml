@@ -1,6 +1,6 @@
 [main]
 repo = "firebase/firebase-tools"
-version = "v11.29.1"
+version = "v11.30.0"
 
 [[sources]]
 name = "firebase-tools-linux"
