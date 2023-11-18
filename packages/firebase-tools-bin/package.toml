@@ -2,8 +2,8 @@
 repo = "firebase/firebase-tools"
 version = "v12.9.1"
 depends = [
-  "glibc",
-  "gcc-libs",
+    "glibc",
+    "gcc-libs",
 ]
 
 [[sources]]
