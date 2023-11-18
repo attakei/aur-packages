@@ -46,6 +46,7 @@ def main(args: Arguments) -> int:
     cfg = tomli.loads((args.root / "package.toml").read_text())
     ctx = {
         "version": cfg["main"]["version"],
+        "release": cfg["main"]["release"],
         "depends": cfg["main"].get("depends", None),
         "sources": [],
     }

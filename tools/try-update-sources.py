@@ -43,6 +43,7 @@ def main(args: Arguments) -> int:
     print(f"::set-output name=current::{current}")
     if current != latest:
         cfg["main"]["version"] = latest
+        cfg["main"]["release"] = 1
         args.config.write_text(tomli_w.dumps(cfg))
     return 0
 
