@@ -2,11 +2,18 @@
 
 pkgname=firebase-tools-bin
 pkgver={{ version_text }}
-pkgrel=1
+pkgrel={{ release }}
 pkgdesc=" The Firebase Command Line Tools (bundled official standalone binary)"
 arch=('x86_64')
 url="https://github.com/firebase/firebase-tools"
 license=('MIT')
+{%- if depends %}
+depends=(
+  {%- for dep in depends %}
+  '{{ dep }}'
+  {% endfor %}
+)
+{%- endif %}
 conflicts=('firebase-tools')
 options=('!strip')
 source=(

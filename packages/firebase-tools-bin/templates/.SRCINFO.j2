@@ -1,12 +1,15 @@
 pkgbase = firebase-tools-bin
 	pkgdesc = The Firebase Command Line Tools (bundled official standalone binary)
 	pkgver = {{ version_text }}
-	pkgrel = 1
+	pkgrel = {{ release }}
 	url = https://github.com/firebase/firebase-tools
 	arch = x86_64
 	license = MIT
 	conflicts = firebase-tools
 	options = !strip
+	{%- for d in depends %}
+	depends = {{ d }}
+	{%- endfor %}
 	{%- for s in sources %}
 	source = {{ s.name }}-{{ version_text }}::{{ s.url }}
 	{%- endfor %}

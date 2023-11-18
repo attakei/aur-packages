@@ -1,6 +1,11 @@
 [main]
 repo = "firebase/firebase-tools"
 version = "v12.9.1"
+release = 2
+depends = [
+    "glibc",
+    "gcc-libs",
+]
 
 [[sources]]
 name = "firebase-tools-linux"
