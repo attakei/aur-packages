@@ -7,6 +7,7 @@ pkgbase = firebase-tools-bin
 	license = MIT
 	conflicts = firebase-tools
 	options = !strip
+	options = !debug
 	{%- for d in depends %}
 	depends = {{ d }}
 	{%- endfor %}

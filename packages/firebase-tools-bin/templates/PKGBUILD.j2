@@ -15,7 +15,7 @@ depends=(
 )
 {%- endif %}
 conflicts=('firebase-tools')
-options=('!strip')
+options=('!strip' '!debug')
 source=(
     {% for s in sources -%}
     "{{ s.name }}-{{ version_text }}::{{ s.url }}"
