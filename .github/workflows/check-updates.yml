@@ -10,17 +10,15 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-      - run: pipx install pipenv
-      - uses: actions/setup-python@v5
-        with:
-          architecture: x64
-          python-version: '3.10'
-          cache: pipenv
-      - run: pipenv install
+      - uses: jdx/mise-action@v2
+      - name: 'Set up dependencies'
+        run: |
+          uv sync --frozen --all-extras
+      - uses: actions/checkout@v4
       - name: Collect packages from target folders
         id: collect
         run: |
-          pipenv run ./tools/collect-packages.py ./packages
+          uv run ./tools/collect-packages.py ./packages
     outputs:
       packages: ${{ steps.collect.outputs.packages }}
   check-package:
