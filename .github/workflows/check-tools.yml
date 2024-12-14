@@ -13,15 +13,11 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - run: pipx install pipenv
-      - uses: actions/setup-python@v4
-        with:
-          architecture: x64
-          python-version: '3.10'
-          cache: pipenv
-      - name: Install dependencies
-        run: pipenv install --dev
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+      - name: 'Set up dependencies'
+        run: |
+          uv sync --frozen --all-extras
       - name: Lint sources
         run: |
-          pipenv run black --check tools
+          uvx black --check tools

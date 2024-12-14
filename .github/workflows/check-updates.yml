@@ -32,18 +32,15 @@ jobs:
       matrix:
         package: ${{ fromJson(needs.collect-packages.outputs.packages) }}
     steps:
-      - uses: actions/checkout@v3
-      - run: pipx install pipenv
-      - uses: actions/setup-python@v5
-        with:
-          architecture: x64
-          python-version: '3.10'
-          cache: pipenv
-      - run: pipenv install
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+      - name: 'Set up dependencies'
+        run: |
+          uv sync --frozen --all-extras
       - name: Try update version
         id: updating
         run: |
-          pipenv run ./tools/try-update-sources.py packages/${{ matrix.package }}
+          uv run ./tools/try-update-sources.py packages/${{ matrix.package }}
       - name: Create Pull Request
         if: steps.updating.outputs.current != steps.updating.outputs.latest
         uses: peter-evans/create-pull-request@v6
