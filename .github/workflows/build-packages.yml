@@ -32,7 +32,7 @@ jobs:
         package: ${{ fromJson(needs.collect-packages.outputs.packages) }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: |
           mkdir ~/.ssh
           echo "${{ secrets.AUR_SSH_KEY }}" > ~/.ssh/aur_key
@@ -42,7 +42,6 @@ jobs:
           echo "  IdentityFile ~/.ssh/aur_key" >> ~/.ssh/config
           mkdir repos
           git clone ssh://aur@aur.archlinux.org/${{ matrix.package }}.git repos/${{ matrix.package }}
-      - uses: actions/checkout@v4
       - uses: jdx/mise-action@v2
       - name: 'Set up dependencies'
         run: |
