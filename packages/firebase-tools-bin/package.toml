@@ -1,6 +1,6 @@
 [main]
 repo = "firebase/firebase-tools"
-version = "v14.11.1"
+version = "v14.11.2"
 release = 1
 depends = [
     "glibc",
