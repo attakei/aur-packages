@@ -1,10 +1,6 @@
 [main]
 repo = "firebase/firebase-tools"
-<<<<<<< update/firebase-tools-bin/v15.20.0
 version = "v15.20.0"
-=======
-version = "v15.19.1"
->>>>>>> main
 release = 1
 depends = [
     "glibc",
